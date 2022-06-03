@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import null
+from flask_cors import cross_origin, CORS
 
 # Entities
 from models.entities.User import User
@@ -9,7 +10,7 @@ from models.UserModel import UserModel
 
 main = Blueprint('user_blueprint', __name__)
 
-@main.route('/')
+@main.route('/', methods = ['GET'])
 def get_users():
     try:
         users = UserModel.get_users()
@@ -17,7 +18,8 @@ def get_users():
     except Exception as ex:
         return jsonify({'message': f'{str(ex)}'}), 500
 
-@main.route('/<id>')
+@main.route('/<id>', methods = ['GET'])
+@cross_origin()
 def get_user(id):
     try:
         user = UserModel.get_user(id)
@@ -29,6 +31,7 @@ def get_user(id):
         return jsonify({'message': str(ex)}), 500
 
 @main.route('/add', methods = ['POST'])
+@cross_origin(origin='*')
 def add_user():
     try:
         userName = request.json['userName']
@@ -47,6 +50,7 @@ def add_user():
         return jsonify({'message': str(ex)}), 500
 
 @main.route('/update/<id>', methods=['PUT'])
+@cross_origin(origin='*')
 def update_user(id):
     try:
         userName = request.json['userName']
@@ -64,6 +68,7 @@ def update_user(id):
         return jsonify({'message': str(ex)}), 500
 
 @main.route('/delete/<id>', methods=['DELETE'])
+@cross_origin(origin='*')
 def delete_user(id):
     try:
         user = User(id)

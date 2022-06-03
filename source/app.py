@@ -1,8 +1,7 @@
 from distutils.log import debug
 import resource
 from flask import Flask
-from sqlalchemy import true;
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from config import config;
 
@@ -10,15 +9,14 @@ from config import config;
 from routes import User
 
 app = Flask(__name__)
-
-CORS(app, resources={"*": {"origins": "http://localhost:3000"}})
+cors = CORS(app, resources = {r'/*': {"origins": "*"}})
 
 def page_not_found(error):
     return '<h1>Page not found :(</h1>', 404
 
-@app.route('/')
+@app.route('/', methods = ['GET'])
 def index():
-    return 'Hello world'
+    return 'Hello world!'
 
 if __name__ == "__main__":
     app.config.from_object(config['development'])
